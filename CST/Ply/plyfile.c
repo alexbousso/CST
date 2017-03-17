@@ -36,7 +36,7 @@ WARRANTY OF MERCHANTABILITY OR FITNESS FOR A PARTICULAR PURPOSE.
 #include <stdlib.h>
 #include <math.h>
 #include <string.h>
-#include <ply.h>
+#include "ply.h"
 
 char *type_names[] = {
 "invalid",
@@ -159,7 +159,7 @@ PlyFile *ply_write(
   for (i = 0; i < nelems; i++) {
     elem = (PlyElement *) myalloc (sizeof (PlyElement));
     plyfile->elems[i] = elem;
-    elem->name = strdup (elem_names[i]);
+    elem->name = _strdup (elem_names[i]);
     elem->num = 0;
     elem->nprops = 0;
   }
@@ -531,7 +531,7 @@ void ply_put_element(PlyFile *plyfile, void *elem_ptr)
   char **other_ptr;
 
   elem = plyfile->which_elem;
-  elem_data = elem_ptr;
+  elem_data = (char *) elem_ptr;
   other_ptr = (char **) (((char *) elem_ptr) + elem->other_offset);
 
   /* write out either to an ascii or binary file */
@@ -546,7 +546,7 @@ void ply_put_element(PlyFile *plyfile, void *elem_ptr)
       if (elem->store_prop[j] == OTHER_PROP)
         elem_data = *other_ptr;
       else
-        elem_data = elem_ptr;
+		  elem_data = (char *) elem_ptr;
       if (prop->is_list) {
         item = elem_data + prop->count_offset;
         get_stored_item ((void *) item, prop->count_internal,
@@ -586,7 +586,7 @@ void ply_put_element(PlyFile *plyfile, void *elem_ptr)
       if (elem->store_prop[j] == OTHER_PROP)
         elem_data = *other_ptr;
       else
-        elem_data = elem_ptr;
+		  elem_data = (char *) elem_ptr;
       if (prop->is_list) {
         item = elem_data + prop->count_offset;
         item_size = ply_type_size[prop->count_internal];
@@ -638,7 +638,7 @@ void ply_put_comment(PlyFile *plyfile, char *comment)
                          sizeof (char *) * (plyfile->num_comments + 1));
 
   /* add comment to list */
-  plyfile->comments[plyfile->num_comments] = strdup (comment);
+  plyfile->comments[plyfile->num_comments] = _strdup (comment);
   plyfile->num_comments++;
 }
 
@@ -662,7 +662,7 @@ void ply_put_obj_info(PlyFile *plyfile, char *obj_info)
                          sizeof (char *) * (plyfile->num_obj_info + 1));
 
   /* add info to list */
-  plyfile->obj_info[plyfile->num_obj_info] = strdup (obj_info);
+  plyfile->obj_info[plyfile->num_obj_info] = _strdup (obj_info);
   plyfile->num_obj_info++;
 }
 
@@ -772,7 +772,7 @@ PlyFile *ply_read(FILE *fp, int *nelems, char ***elem_names)
 
   elist = (char **) myalloc (sizeof (char *) * plyfile->nelems);
   for (i = 0; i < plyfile->nelems; i++)
-    elist[i] = strdup (plyfile->elems[i]->name);
+    elist[i] = _strdup (plyfile->elems[i]->name);
 
   *elem_names = elist;
   *nelems = plyfile->nelems;
@@ -988,7 +988,7 @@ Entry:
   elem_ptr - pointer to location where the element information should be put
 ******************************************************************************/
 
-ply_get_element(PlyFile *plyfile, void *elem_ptr)
+void ply_get_element(PlyFile *plyfile, void *elem_ptr)
 {
   if (plyfile->file_type == PLY_ASCII)
     ascii_get_element (plyfile, (char *) elem_ptr);
@@ -1147,7 +1147,7 @@ PlyOtherProp *ply_get_other_properties(
 
   /* create structure for describing other_props */
   other = (PlyOtherProp *) myalloc (sizeof (PlyOtherProp));
-  other->name = strdup (elem_name);
+  other->name = _strdup (elem_name);
 #if 0
   if (elem->other_offset == NO_OTHER_PROPS) {
     other->size = 0;
@@ -1247,7 +1247,7 @@ PlyOtherElems *ply_get_other_element (
   other->elem_count = elem_count;
 
   /* save name of element */
-  other->elem_name = strdup (elem_name);
+  other->elem_name = _strdup (elem_name);
 
   /* create a list to hold all the current elements */
   other->other_data = (OtherData **)
@@ -1477,7 +1477,7 @@ void ascii_get_element(PlyFile *plyfile, char *elem_ptr)
   int nwords;
   int which_word;
   FILE *fp = plyfile->fp;
-  char *elem_data,*item;
+  char *elem_data, *item = nullptr;
   char *item_ptr;
   int item_size;
   int int_val;
@@ -1487,7 +1487,7 @@ void ascii_get_element(PlyFile *plyfile, char *elem_ptr)
   int store_it;
   char **store_array;
   char *orig_line;
-  char *other_data;
+  char *other_data = nullptr;
   int other_flag;
 
   /* the kind of element we're reading currently */
@@ -1596,7 +1596,7 @@ void binary_get_element(PlyFile *plyfile, char *elem_ptr)
   PlyElement *elem;
   PlyProperty *prop;
   FILE *fp = plyfile->fp;
-  char *elem_data,*item;
+  char *elem_data, *item = nullptr;
   char *item_ptr;
   int item_size;
   int int_val;
@@ -1605,7 +1605,7 @@ void binary_get_element(PlyFile *plyfile, char *elem_ptr)
   int list_count;
   int store_it;
   char **store_array;
-  char *other_data;
+  char *other_data = nullptr;
   int other_flag;
 
   /* the kind of element we're reading currently */
@@ -2342,7 +2342,7 @@ void add_element (PlyFile *plyfile, char **words, int nwords)
 
   /* create the new element */
   elem = (PlyElement *) myalloc (sizeof (PlyElement));
-  elem->name = strdup (words[1]);
+  elem->name = _strdup (words[1]);
   elem->num = atoi (words[2]);
   elem->nprops = 0;
 
@@ -2405,12 +2405,12 @@ void add_property (PlyFile *plyfile, char **words, int nwords)
   if (equal_strings (words[1], "list")) {       /* is a list */
     prop->count_external = get_prop_type (words[2]);
     prop->external_type = get_prop_type (words[3]);
-    prop->name = strdup (words[4]);
+    prop->name = _strdup (words[4]);
     prop->is_list = 1;
   }
   else {                                        /* not a list */
     prop->external_type = get_prop_type (words[1]);
-    prop->name = strdup (words[2]);
+    prop->name = _strdup (words[2]);
     prop->is_list = 0;
   }
 
@@ -2477,7 +2477,7 @@ Copy a property.
 
 void copy_property(PlyProperty *dest, PlyProperty *src)
 {
-  dest->name = strdup (src->name);
+  dest->name = _strdup (src->name);
   dest->external_type = src->external_type;
   dest->internal_type = src->internal_type;
   dest->offset = src->offset;

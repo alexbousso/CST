@@ -35,16 +35,16 @@
   </PropertyGroup>
   <ItemGroup>
     <Reference Include="Apex">
-      <HintPath>..\..\..\SharpGL\Core\SharpGL.WPF\Apex.dll</HintPath>
+      <HintPath>..\..\SharpGL\Apex.dll</HintPath>
     </Reference>
     <Reference Include="SharpGL">
-      <HintPath>..\..\..\SharpGL\Core\SharpGL.WPF\SharpGL.dll</HintPath>
+      <HintPath>..\..\SharpGL\SharpGL.dll</HintPath>
     </Reference>
     <Reference Include="SharpGL.SceneGraph">
-      <HintPath>..\..\..\SharpGL\Core\SharpGL.WPF\SharpGL.SceneGraph.dll</HintPath>
+      <HintPath>..\..\SharpGL\SharpGL.SceneGraph.dll</HintPath>
     </Reference>
     <Reference Include="SharpGL.WPF">
-      <HintPath>..\..\..\SharpGL\Core\SharpGL.WPF\SharpGL.WPF.dll</HintPath>
+      <HintPath>..\..\SharpGL\SharpGL.WPF.dll</HintPath>
     </Reference>
     <Reference Include="System" />
     <Reference Include="System.Data" />
@@ -104,14 +104,6 @@
   </ItemGroup>
   <ItemGroup>
     <None Include="App.config" />
-  </ItemGroup>
-  <ItemGroup>
-    <Content Include="ply\ply.h" />
-    <Content Include="ply\plyWrapper.cpp" />
-    <Content Include="ply\plyWrapper.h" />
-    <Resource Include="ply\plydocs.txt" />
-    <Content Include="ply\plyfile.c" />
-    <Content Include="ply\plytest.c" />
   </ItemGroup>
   <Import Project="$(MSBuildToolsPath)\Microsoft.CSharp.targets" />
   <!-- To modify your build process, add your task inside one of the targets below and uncomment it. 

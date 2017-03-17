@@ -8,7 +8,7 @@ Greg Turk, March 1994
 
 #include <stdio.h>
 #include <math.h>
-#include <ply.h>
+#include "ply.h"
 
 /* user's vertex and face definitions for a polygonal object */
 
@@ -81,7 +81,7 @@ PlyProperty face_props[] = { /* list of property information for a vertex */
 The main routine just creates and then reads a PLY file.
 ******************************************************************************/
 
-main()
+int main()
 {
 
 #if 1
@@ -101,7 +101,7 @@ main()
 Write out a PLY file.
 ******************************************************************************/
 
-write_test()
+int write_test()
 {
   int i,j;
   PlyFile *ply;
