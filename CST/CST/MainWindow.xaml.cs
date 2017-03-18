@@ -33,7 +33,7 @@ namespace CST
 
         private void Draw(OpenGL gl)
         {
-            Vertex[] vertices = PlyWrapper.PlyWrapper.GetVerticesFromPlyFile(null);
+            Vertex[] vertices = PlyWrapper.PlyWrapper.GetVerticesFromPlyFile("");
         }
 
         private void OpenGLControl_OpenGLDraw(object sender, OpenGLEventArgs args)
@@ -52,8 +52,8 @@ namespace CST
             program.Push(gl, null);
             gl.Rotate(rotation, 0.0f, 1.0f, 0.0f);
 
-            Cube cube = new Cube();
-            cube.Render(gl, RenderMode.Render);
+            //Cube cube = new Cube();
+            //cube.Render(gl, RenderMode.Render);
 
             Teapot tp = new Teapot();
             tp.Draw(gl, 14, 1, OpenGL.GL_FILL);

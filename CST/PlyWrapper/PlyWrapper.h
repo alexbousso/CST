@@ -44,24 +44,29 @@ namespace PlyWrapper
 			delete filename;
 			filename = nullptr;
 
-			array<Vertex^>^ vertices = gcnew array<Vertex^>(nelems);
-			VertexNative **vlist = new VertexNative*[nelems];
+			array<Vertex^>^ vertices = nullptr;
+			VertexNative **vlist;
 			//VertexNative **vlist = (VertexNative **)malloc(sizeof (VertexNative *)* nelems);
 
 			for (int i = 0; i < nelems; i++)
 			{
 				char *elem_name = elem_names[i];
+				int num_elems, nprops;
+				PlyProperty **plist = ply_get_element_description(plyFile, elem_name, &num_elems, &nprops);
 
 				if (!equal_strings("vertex", elem_name))
 				{
 					continue;
 				}
 
+				vertices = gcnew array<Vertex^>(num_elems);
+				vlist = new VertexNative*[num_elems];
+
 				ply_get_property(plyFile, elem_name, &vert_props[0]);
 				ply_get_property(plyFile, elem_name, &vert_props[1]);
 				ply_get_property(plyFile, elem_name, &vert_props[2]);
 
-				for (int j = 0; j < nelems; j++)
+				for (int j = 0; j < num_elems; j++)
 				{
 					vlist[j] = new VertexNative;
 					//vlist[j] = (VertexNative *)malloc(sizeof (VertexNative));
@@ -72,15 +77,15 @@ namespace PlyWrapper
 					vertices[j]->y = vlist[j]->y;
 					vertices[j]->z = vlist[j]->z;
 				}
-			}
 
-			for (int i = 0; i < nelems; i++)
-			{
-				delete vlist[i];
-				//free(vlist[i]);
+				for (int i = 0; i < nelems; i++)
+				{
+					delete vlist[i];
+					//free(vlist[i]);
+				}
+				delete vlist;
+				//free(vlist);
 			}
-			delete vlist;
-			//free(vlist);
 
 			return vertices;
 		}
