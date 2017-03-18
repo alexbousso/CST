@@ -26,21 +26,29 @@ namespace CST
     /// </summary>
     public partial class MainWindow : Window
     {
+        private Vertex[] vertices;
+
         public MainWindow()
         {
             InitializeComponent();
         }
 
+        private void Foo()
+        {
+            vertices = PlyWrapper.PlyWrapper.GetVerticesFromPlyFile("");
+        }
+
         private void Draw(OpenGL gl)
         {
-            Vertex[] vertices = PlyWrapper.PlyWrapper.GetVerticesFromPlyFile("");
+            foreach (Vertex vertex in vertices)
+            {
+                
+            }
         }
 
         private void OpenGLControl_OpenGLDraw(object sender, OpenGLEventArgs args)
         {
             OpenGL gl = args.OpenGL;
-
-            Draw(gl);
 
             // Clear The Screen And The Depth Buffer
             gl.Clear(OpenGL.GL_COLOR_BUFFER_BIT | OpenGL.GL_DEPTH_BUFFER_BIT);
@@ -67,6 +75,8 @@ namespace CST
         private void OpenGLControl_OpenGLInitialized(object sender, OpenGLEventArgs args)
         {
             OpenGL gl = args.OpenGL;
+
+            Foo();
 
             gl.Enable(OpenGL.GL_DEPTH_TEST);
 
