@@ -37,6 +37,9 @@
     <Reference Include="Apex">
       <HintPath>..\..\SharpGL\Apex.dll</HintPath>
     </Reference>
+    <Reference Include="PlyWrapper">
+      <HintPath>..\Debug\PlyWrapper.dll</HintPath>
+    </Reference>
     <Reference Include="SharpGL">
       <HintPath>..\..\SharpGL\SharpGL.dll</HintPath>
     </Reference>
