@@ -4,23 +4,43 @@ using System.Linq;
 using System.Text;
 using System.Threading.Tasks;
 using System.Windows;
-using System.Windows.Controls;
-using System.Windows.Data;
-using System.Windows.Documents;
-using System.Windows.Input;
-using System.Windows.Media;
-using System.Windows.Media.Imaging;
-using System.Windows.Navigation;
-using System.Windows.Shapes;
 using SharpGL;
 using SharpGL.SceneGraph;
 using SharpGL.SceneGraph.Core;
 using SharpGL.SceneGraph.Primitives;
 using SharpGL.SceneGraph.Shaders;
+using Polygon = SharpGL.SceneGraph.Primitives.Polygon;
 using Vertex = PlyWrapper.Vertex;
 
 namespace CST
 {
+    class MyClass : Polygon
+    {
+        private Vertex[] vertices;
+
+        public MyClass(Vertex[] vertices)
+        {
+            this.vertices = vertices;
+
+            Name = "aaa";
+
+            UVs.Add(new UV(0, 0));
+            UVs.Add(new UV(0, 1));
+            UVs.Add(new UV(1, 1));
+            UVs.Add(new UV(1, 0));
+
+            int i = 0;
+
+            foreach (Vertex vertex in vertices)
+            {
+                Vertices.Add(new SharpGL.SceneGraph.Vertex(vertex.x, vertex.y, vertex.z));
+                Face face = new Face();
+                face.Indices.Add(new Index(i++, i % 4));
+                Faces.Add(face);
+            }
+        }
+    }
+
     /// <summary>
     /// Interaction logic for MainWindow.xaml
     /// </summary>
@@ -40,10 +60,8 @@ namespace CST
 
         private void Draw(OpenGL gl)
         {
-            foreach (Vertex vertex in vertices)
-            {
-                
-            }
+            MyClass myClass = new MyClass(vertices);
+            myClass.Render(gl, RenderMode.Render);
         }
 
         private void OpenGLControl_OpenGLDraw(object sender, OpenGLEventArgs args)
@@ -63,8 +81,10 @@ namespace CST
             //Cube cube = new Cube();
             //cube.Render(gl, RenderMode.Render);
 
-            Teapot tp = new Teapot();
-            tp.Draw(gl, 14, 1, OpenGL.GL_FILL);
+            //Teapot tp = new Teapot();
+            //tp.Draw(gl, 14, 1, OpenGL.GL_FILL);
+
+            Draw(gl);
 
             rotation += 3.0f;
             program.Pop(gl, null);
